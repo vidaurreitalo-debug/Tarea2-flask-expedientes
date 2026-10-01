@@ -47,18 +47,18 @@ Como todavía no se utilizan bases de datos ni archivos, el manejo de versiones 
 
 ## Cómo ejecutarlo
 
-bash
+```bash
 pip install flask
 python app.py
+```
 
+**Ruta:**
 
-*Ruta:*
-
-text
+```text
 /expediente/<nombreEmpleado>/<perfil>/<documentosSubidos>/<nombreDocumento>?existente=<true|false>
+```
 
-
-El parámetro existente se recibe mediante query string. Su valor determina si el documento se registra como nuevo o como una versión de uno que ya se encontraba en el expediente.
+El parámetro `existente` se recibe mediante query string. Su valor determina si el documento se registra como nuevo o como una versión de uno que ya se encontraba en el expediente.
 
 ## Pruebas
 
