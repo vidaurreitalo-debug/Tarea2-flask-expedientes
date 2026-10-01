@@ -35,3 +35,41 @@ La ficha establece que el checklist debe ser configurable según el perfil o pue
 
 Como todavía no se utilizan bases de datos ni archivos, el manejo de versiones se simula mediante parámetros recibidos en la URL. El almacenamiento real del historial se implementará en una etapa posterior del proyecto.
 
+### 4. Caso por defecto
+
+* Si el perfil no existe en las plantillas de RRHH, el sistema responde error: perfil no reconocido y muestra los perfiles válidos.
+* Si se intenta agregar un documento nuevo cuando el checklist ya está completo, el sistema responde con un error indicando que no se pueden agregar más documentos.  Además, si se intenta agregar una cantidad de documentos negativa o una cantidad mayor a la requerida el sistema indica que se necesita un número válido                                                                                                                                                         
+* Si el parámetro que indica si el documento ya existía no es true o false, el sistema devuelve un error de entrada.
+* Si el documento ya existía, se permite registrar una nueva versión incluso cuando el expediente está completo, ya que una renovación no representa un documento adicional.
+* Si los datos son válidos y la cantidad de documentos registrados coincide con la requerida, el expediente se clasifica como completo.
+
+---
+
+## Cómo ejecutarlo
+
+bash
+pip install flask
+python app.py
+
+
+*Ruta:*
+
+text
+/expediente/<nombreEmpleado>/<perfil>/<documentosSubidos>/<nombreDocumento>?existente=<true|false>
+
+
+El parámetro existente se recibe mediante query string. Su valor determina si el documento se registra como nuevo o como una versión de uno que ya se encontraba en el expediente.
+
+## Pruebas
+
+| *URL*                                                                            | *Acción*                                              | *Estado obtenido*                        |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| http://127.0.0.1:5000/expediente/Ana/administrativo/0/DUI?existente=false        | Agregar documento nuevo                                 | incompleto (4 pendientes)                  |
+| http://127.0.0.1:5000/expediente/Luis/medico/4/Carnet?existente=true             | Registrar nueva versión                                 | incompleto (3 pendientes)                  |
+| http://127.0.0.1:5000/expediente/Sofia/administrativo/4/Contrato?existente=false | Agregar documento nuevo                                 | completo                                   |
+| http://127.0.0.1:5000/expediente/Pedro/medico/7/Carnet?existente=false           | Intentar agregar documento nuevo con checklist completo | error: no se pueden agregar más documentos |
+| http://127.0.0.1:5000/expediente/Eva/enfermero/3/DUI?existente=false             | Ingresar perfil no reconocido                           | error: perfil no reconocido                |
+
+*Nota:* Cada prueba se ejecuta de manera independiente, ya que todavía no existe persistencia de datos entre solicitudes. Los resultados permiten verificar la lógica de decisión y el comportamiento esperado de cada condición.
+
+Las capturas de pantalla de cada prueba se incluyen en la entrega.
