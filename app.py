@@ -39,3 +39,51 @@ def evaluarExpediente(nombreEmpleado, perfil, documentosSubidos, nombreDocumento
         return jsonify({
             "error": "El parametro existente debe ser true o false"
         }), 400
+    if yaExistia == "true":
+        accion = "nueva version"
+        mensaje = "El documento ya existia. Se conserva su historial."
+
+    elif documentosSubidos < documentosRequeridos:
+        accion = "documento nuevo"
+        documentosSubidos += 1
+        mensaje = "El documento se agrego al expediente."
+
+    else:
+        return jsonify({
+            "empleado": nombreEmpleado,
+            "documento": nombreDocumento,
+            "error": "No se pueden agregar mas documentos: el checklist ya esta completo."
+        }), 400
+
+    # 3. Evaluar el estado actualizado del expediente
+    if documentosSubidos == 0:
+        estado = "sin iniciar"
+
+    elif documentosSubidos < documentosRequeridos:
+        estado = "incompleto"
+
+    elif documentosSubidos == documentosRequeridos:
+        estado = "completo"
+
+    else:
+        estado = "error: documentos exceden el checklist"
+
+    # 4. Calcular documentos pendientes
+    pendientes = documentosRequeridos - documentosSubidos
+
+    return jsonify({
+        "empleado": nombreEmpleado,
+        "perfil": perfil,
+        "documento": nombreDocumento,
+        "documentos antes de actualizar": documentosAntes,
+        "accion": accion,
+        "mensaje": mensaje,
+        "documentosRequeridos": documentosRequeridos,
+        "documentos despues de actualizar": documentosSubidos,
+        "documentosPendientes": pendientes,
+        "estado": estado
+    })
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
