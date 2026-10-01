@@ -60,6 +60,34 @@ python app.py
 
 El parámetro `existente` se recibe mediante query string. Su valor determina si el documento se registra como nuevo o como una versión de uno que ya se encontraba en el expediente.
 
+## Cómo funciona
+**Funcionamiento paso a paso:**
+1. Recepción de Datos (Ruta):
+A través de la URL /expediente/..., la API recibe cuatro parámetros principales: el nombre del empleado, su perfil, la cantidad de documentos que ya ha subido y el nombre del documento actual.
+
+2. Validación del Perfil:
+Asigna una cantidad obligatoria de documentos a entregar según el rol:
+
+* Administrativo: 5 documentos.
+* Médico: 7 documentos.
+(Si se ingresa un perfil distinto o una cantidad de documentos ilógica, devuelve un error 400).
+
+3. Lógica de Actualización:
+Lee un parámetro de consulta (?existente=true/false) para decidir qué acción tomar:
+
+* Si el documento ya existía (true): Lo registra como una "nueva versión" y conserva el mismo número de documentos subidos.
+* Si es un documento nuevo (false): Suma 1 a la cantidad de documentos subidos, siempre y cuando no se haya superado el límite del perfil.
+
+4. Evaluación del Estado:
+Con base en el nuevo total de documentos, clasifica el expediente en:
+
+* Sin iniciar: 0 documentos.
+* Incompleto: Menos de los requeridos.
+* Completo: Exactamente la cantidad requerida.
+
+5. Respuesta:
+Finaliza devolviendo un objeto JSON con un reporte detallado que incluye: datos del empleado, acción realizada (nuevo o versión), documentos previos/actuales, documentos pendientes y el estado final del expediente.
+
 ## Pruebas
 
 | *URL*                                                                            | *Acción*                                              | *Estado obtenido*                        |
